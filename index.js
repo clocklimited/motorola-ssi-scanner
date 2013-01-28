@@ -16,5 +16,7 @@ scanner.on('open', function () {
   scanner.on('data', function (data) {
     console.log('recieved data: ' + data)
   })
-  scanner.write(new Buffer(commands.diagnostics))
+  var scan = commands.getCommand(0xe4)
+  console.log(scan)
+  scanner.write(scan)
 })
