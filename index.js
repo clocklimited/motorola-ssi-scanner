@@ -18,8 +18,8 @@ scanner.on('open', function () {
     console.log(data)
     console.log('(ascii): ' + data.toString())
   })
-  commands.getCommand(0xe4, null, function(scan) {
+  setInterval(function() { commands.getCommand(0xe4, null, function(scan) {
     console.log(scan)
     scanner.write(scan)
-  })
+  })}, 10000)
 })
