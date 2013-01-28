@@ -16,6 +16,7 @@ scanner.on('open', function () {
   scanner.on('data', function (data) {
     console.log('recieved data: ')
     console.log(data)
+    console.log('(ascii): ' + data.toString())
   })
   commands.getCommand(0xe4, null, function(scan) {
     console.log(scan)
