@@ -32,18 +32,18 @@ var getLengthAsHex = function(data, cb) {
   if (data.length > 0xff) {
     error = new Error('Length is greater than 255 (0xff) and is not supported')
   } else {
-    data[0] = data.length.toString(16)
+    data[0] = '0x' + data.length.toString(16)
   }
   cb(error, data)
 }
 
 var generateChecksum = function(data, cb) {
   var sum = data.reduce(function (a, b) {
-    return a + b
+    return Number(a) + Number(b)
   })
   // get the 2's complement of the sum of the message
   var checksum = (~sum + 1 >>> 0).toString(16)
-  data.push(checksum.substring(4,6))
-  data.push(checksum.substring(6))
+  data.push('0x' + checksum.substring(4,6))
+  data.push('0x' + checksum.substring(6))
   cb(data)
 }
