@@ -31,6 +31,7 @@ module.exports = function() {
   }
 
   scanner.on('open', function() {
+    console.log('device opened')
     scanner.on('data', function(data) {
       if (!isAck(data)) {
         self.emit('data',
@@ -47,6 +48,12 @@ module.exports = function() {
       scanner.write(packet)
       self.emit('sent', opCode, payload, packet)
     })
+  }
+
+  self.pseudoContinuousScan = function() {
+    return setInterval(function() {
+      self.sendCommand(0xe4, null)
+    }, 10000)
   }
 
   self.serialport = scanner
