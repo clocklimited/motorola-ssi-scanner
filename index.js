@@ -3,7 +3,7 @@ var serialport = require('serialport')
   , scanner = new SerialPort('/dev/ttyACM0', {
     baudrate: 9600
   })
-  , commands = require('./commands')
+  , commands = require('./lib/commands')
 
 serialport.list(function (err, ports) {
   console.log('Available Ports: ')
