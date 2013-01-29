@@ -6,8 +6,8 @@ var serialport = require('serialport')
   , commands = require('./lib/commands')
   , EventEmitter = require('events').EventEmitter
 
-serialport.list(function (err, ports) {
-  console.log('Available Ports: ')
+serialport.list(function(err, ports) {
+  console.log('Available devices: ')
   ports.forEach(function(port) {
     console.log(port.comName, port.pnpId, port.manufacturer)
   })
@@ -17,9 +17,9 @@ module.exports = function() {
   var scanner = device
     , self = new EventEmitter()
 
-  scanner.on('open', function () {
-    scanner.on('data', function (data) {
-      self.emit('recieved',
+  scanner.on('open', function() {
+    scanner.on('data', function(data) {
+      self.emit('data',
         { raw: data
         , ascii: data.toString()
         }
@@ -27,10 +27,10 @@ module.exports = function() {
     })
   })
 
-  self.sendCommand = function (opCode, payload) {
+  self.sendCommand = function(opCode, payload) {
     commands.getCommand(opCode, payload, function(packet) {
       scanner.write(packet)
-      self.emit('sent', opCode, payload)
+      self.emit('sent', opCode, payload, packet)
     })
   }
 
