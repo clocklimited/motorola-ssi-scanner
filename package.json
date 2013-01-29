@@ -1,7 +1,7 @@
 {
   "name": "motorola-ssi",
-  "version": "0.0.0",
-  "description": "motorola-ssi ============",
+  "version": "0.0.1",
+  "description": "motorola-ssi"
   "main": "index.js",
   "dependencies": {
     "serialport": "~1.0.8"
@@ -14,7 +14,7 @@
     "type": "git",
     "url": "git://github.com/tomgco/motorola-ssi.git"
   },
-  "author": "",
-  "license": "BSD",
+  "author": "Tom Gallacher",
+  "license": "MIT",
   "readmeFilename": "README.md"
 }
