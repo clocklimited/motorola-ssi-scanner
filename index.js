@@ -19,9 +19,15 @@ module.exports = function() {
 
   function isAck(packet) {
     var ack = [0x04, 0xd0, 0x00, 0x00, 0xff, 0x2c]
-    return packet.every(function (element, index) {
-      return element === ack[index]
-    })
+    if (ack.length !== packet.length) {
+      return false
+    }
+    for (var i = ack.length - 1; i >= 0; i--) {
+      if (ack[i] !== packet[i]) {
+        return false
+      }
+    }
+    return true
   }
 
   scanner.on('open', function() {
