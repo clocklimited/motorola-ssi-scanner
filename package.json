@@ -1,7 +1,7 @@
 {
   "name": "motorola-ssi",
   "version": "0.0.1",
-  "description": "motorola-ssi"
+  "description": "motorola-ssi",
   "main": "index.js",
   "dependencies": {
     "serialport": "~1.0.8"
