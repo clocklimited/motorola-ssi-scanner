@@ -51,6 +51,7 @@ module.exports = function() {
   }
 
   self.pseudoContinuousScan = function() {
+    self.sendCommand(0xe4, null)
     return setInterval(function() {
       self.sendCommand(0xe4, null)
     }, 10000)
