@@ -17,13 +17,22 @@ module.exports = function() {
   var scanner = device
     , self = new EventEmitter()
 
+  function isAck(packet) {
+    var ack = [0x04, 0xd0, 0x00, 0x00, 0xff, 0x2c]
+    return packet.every(function (element, index) {
+      return element === ack[index]
+    })
+  }
+
   scanner.on('open', function() {
     scanner.on('data', function(data) {
-      self.emit('data',
-        { raw: data
-        , ascii: data.toString()
-        }
-      )
+      if (!isAck(data)) {
+        self.emit('data',
+          { raw: data
+          , ascii: data.toString()
+          }
+        )
+      }
     })
   })
 
