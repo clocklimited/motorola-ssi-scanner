@@ -10,12 +10,13 @@
     "serialport": "^1.7.4"
   },
   "devDependencies": {
+    "chalk": "^1.1.0",
     "jscs": "^2.0.0",
     "jshint": "^2.8.0"
   },
   "scripts": {
     "test": "mocha -R spec --recursive test",
-    "qa": "jscs -v -r unix . && jslint ."
+    "qa": "jscs -v -r unix . && jshint ."
   },
   "repository": {
     "type": "git",
