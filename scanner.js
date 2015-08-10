@@ -169,7 +169,8 @@ Scanner.prototype._ready = function() {
 		[ this.send.bind(this, opcodes.scanDisable)
 		, this.send.bind(this, opcodes.flushQueue)
 		, this.send.bind(this, opcodes.imagerMode, 0x00)
-		, this.send.bind(this, opcodes.paramSend, [ 0xff, 0x5e, 0x01 ])
+		, this.send.bind(this, opcodes.paramSend, [ 0xff, 0x5e, 0x01 ]) // No read
+		, this.send.bind(this, opcodes.paramSend, [ 0xff, 0xee, 0x01 ]) // Decode data
 		, this.send.bind(this, opcodes.scanEnable)
 		, this.send.bind(this, opcodes.startScanSession)
 
