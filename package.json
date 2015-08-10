@@ -16,13 +16,16 @@
     "mc-logger": "0.0.0",
     "mockdate": "^1.0.3"
   },
+  "publishConfig": {
+    "registry": "http://npm.clockte.ch"
+  },
   "scripts": {
     "test": "mocha -R spec --recursive test/*.test.js",
     "qa": "jscs -v -r unix . && jshint ."
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/serby/motorola-ssi-scanner.git"
+    "url": "git://github.com/clocklimited/motorola-ssi-scanner.git"
   },
   "author": "Paul Serby",
   "license": "MIT"
