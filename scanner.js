@@ -139,7 +139,7 @@ Scanner.prototype._findPort = function(cb) {
 Scanner.prototype._onData = function(packet) {
 
 		var error
-		this.emit('received', packet)
+		this.emit('received', packet, this.getOpcodeDescription(packet))
 		this.logger.debug('received', packet)
 
 		// Ensure valid packets are coming in
@@ -166,8 +166,7 @@ Scanner.prototype._ready = function() {
 	this.device.on('data', this._onData.bind(this))
 
 	async.series(
-		[ this.getDiagnosticInformation.bind(this)
-		, this.send.bind(this, opcodes.scanDisable)
+		[ this.send.bind(this, opcodes.scanDisable)
 		, this.send.bind(this, opcodes.flushQueue)
 		, this.send.bind(this, opcodes.imagerMode, 0x00)
 		, this.send.bind(this, opcodes.paramSend, [ 0xff, 0x5e, 0x01 ])
@@ -180,24 +179,18 @@ Scanner.prototype._ready = function() {
 		}).bind(this))
 }
 
-Scanner.prototype._send = function(opcode, payload) {
-	var command = new Buffer(getCommand(opcode, payload))
-
-	this.emit('send', command)
-	this.device.write(command)
+Scanner.prototype.getOpcodeDescription = function(packet) {
+	var opcode = Object.keys(opcodes).filter(function(name) {
+		return packet[1] === opcodes[name] ? name : ''
+	})
+	return opcode[0]
 }
 
-Scanner.prototype.getDiagnosticInformation = function() {
-	this._send(opcodes.ssiMgmtCommand, [ 0x00, 0x06, 0x20, 0x00, 0xff, 0xff ], function(err, data) {
-	})
-
-	setTimeout((function() {
-		this._send(opcodes.ssiMgmtCommand, [ 0x00, 0x08, 0x02, 0x00, 0x27, 0x4d, 0x42, 0x00 ], function(err, data) {
-			console.log(data)
-		})
-	}).bind(this), 1000)
-
-
+Scanner.prototype._send = function(opcode, payload) {
+	var command = new Buffer(getCommand(opcode, payload))
+	this.logger.debug('send', command, this.getOpcodeDescription(command))
+	this.emit('send', command)
+	this.device.write(command)
 }
 
 Scanner.prototype.send = function(opcode, payload, cb) {
