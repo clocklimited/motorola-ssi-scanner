@@ -140,7 +140,7 @@ describe('decode-data-adaptor', function() {
 
 	it('should emit rescanWarning', function(done) {
 		var spyScanner = new SpyScanner()
-			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner, { rescanWarning: 5 })
+			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner, { rescanWarningTreshold: 5 })
 			, count = 0
 
 		spyScanner.on('recanWarning', function() {
