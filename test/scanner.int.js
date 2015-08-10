@@ -10,7 +10,6 @@ function findCode(data) {
 	return value
 }
 
-
 function debug(scanner) {
 	scanner.on('sent', function(data) {
 		console.log('sent', data, findCode(data))
@@ -42,19 +41,6 @@ describe('scanner', function() {
 
 		scanner.on('error', function() {
 			done()
-		})
-
-		scanner.start()
-
-	})
-
-	it.only('should send command', function(done) {
-		var scanner = new Scanner()
-		this.timeout(100000)
-		debug(scanner)
-
-		scanner.on('scan', function(data) {
-			console.log('scan', data)
 		})
 
 		scanner.start()
