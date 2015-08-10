@@ -1,50 +1,33 @@
 var Scanner = require('../scanner')
-	, scanner = new Scanner()
-	, opcodes = require('../lib/opcodes')
+	, logger = { info: log.bind(null, 'info')
+		, debug: log.bind(null, 'debug')
+		, warn: log.bind(null, 'warn') }
+	, scanner = new Scanner({ logger: logger })
+	, chalk = require('chalk');
 
-function log() {
-	var args = Array.prototype.slice.apply(arguments)
-
+function log(level) {
+	var args = Array.prototype.slice.call(arguments, 1)
+		, formattedArgs = []
 	args.forEach(function(arg) {
-		var opcode = ''
 		if (Buffer.isBuffer(arg)) {
-			opcode = Object.keys(opcodes).filter(function(name) {
-				return arg[1] === opcodes[name] ? name : ''
-			})
-			if (opcode.length > 0)
-			args.push(opcode[0])
+			formattedArgs.push(arg.toString('hex'))
+		} else {
+			formattedArgs.push(arg)
 		}
 	})
-
-	console.log.apply(console, args)
+	console.log(level, chalk.grey(formattedArgs))
 }
 
-scanner.on('send', function(data) {
-	log('send\t\t', data)
+scanner.on('ready', function() {
+	console.log('Scanner Ready')
 })
 
 scanner.on('scan', function(code, type) {
-	log('scan\t\t', code, type)
-})
-
-scanner.on('received', function(data) {
-	log('received\t', data)
-})
-
-scanner.on('unknownOpcode', function(data) {
-	log('unknownOpcode\t', data)
-})
-
-scanner.on('error', function(error) {
-	log(error.message, error.packet)
+	console.log(chalk.red('scan\t\t'), code, type)
 })
 
 scanner.on('rescanWarning', function(code, type) {
-	log('Rescan Detected', code, type)
-})
-
-scanner.on('ready', function() {
-	log('Scanner Ready')
+	console.log('Rescan Detected', code, type)
 })
 
 scanner.start()
