@@ -9,13 +9,19 @@ var EventEmitter = require('events').EventEmitter
 	, async = require('async')
 	, check = require('./lib/checksum').check
 	, fs = require('fs')
+	, DecodeDataAdaptor = require('./lib/response-adaptor/decode-data')
+
 console.debug = console.info
+
+function noop() {
+}
+
 function Scanner(options) {
 	EventEmitter.call(this)
 	this.options = extend(
-		{ rescanTimeout: 10000
+		{ rescanTimeout: 2000
 		, sendInterval: 100
-		, rescanWarningTreshold: 5
+		, rescanWarningTreshold: 10
 		, logger: console }, options)
 
 	this.logger = this.options.logger
@@ -200,6 +206,9 @@ Scanner.prototype.send = function(opcode, payload, cb) {
 		cb = payload
 		payload = undefined
 	}
+
+	if (cb === undefined) cb = noop
+
 	if (!this.isReady) return cb(new Error('Scanner not ready'))
 	if (this.isWaiting) return cb(new Error('Scanner not waiting for a response'))
 
