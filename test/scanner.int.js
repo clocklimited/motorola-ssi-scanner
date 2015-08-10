@@ -2,23 +2,6 @@ var Scanner = require('../scanner')
 	, assert = require('assert')
 	, opcodes = require('../lib/opcodes')
 
-function findCode(data) {
-	var value = ''
-	Object.keys(opcodes).some(function(key) {
-		if (opcodes[key] === data[1]) value = key
-	})
-	return value
-}
-
-function debug(scanner) {
-	scanner.on('sent', function(data) {
-		console.log('sent', data, findCode(data))
-	})
-	scanner.on('response', function(data) {
-		console.log('response', data, findCode(data))
-	})
-}
-
 describe('scanner', function() {
 	it('should find device and emit ready', function(done) {
 
