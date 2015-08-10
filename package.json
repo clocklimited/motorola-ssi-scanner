@@ -1,20 +1,26 @@
 {
-  "name": "motorola-ssi",
-  "version": "0.0.3",
-  "description": "motorola-ssi",
-  "main": "index.js",
+  "name": "motorola-ssi-scanner",
+  "version": "0.0.1",
+  "description": "motorola-ssi-scanner",
+  "main": "scanner.js",
   "dependencies": {
-    "serialport": "~1.1.3"
+    "async": "^1.4.0",
+    "lodash.assign": "^3.2.0",
+    "lodash.isequal": "^3.0.4",
+    "serialport": "^1.7.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jscs": "^2.0.0",
+    "jshint": "^2.8.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -R spec --recursive test",
+    "qa": "jscs -v -r unix . && jslint ."
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/tomgco/motorola-ssi.git"
+    "url": "git://github.com/serby/motorola-ssi-scanner.git"
   },
-  "author": "Tom Gallacher",
-  "license": "MIT",
-  "readmeFilename": "README.md"
+  "author": "Paul Serby",
+  "license": "MIT"
 }
