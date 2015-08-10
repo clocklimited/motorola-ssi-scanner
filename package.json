@@ -12,10 +12,12 @@
   "devDependencies": {
     "chalk": "^1.1.0",
     "jscs": "^2.0.0",
-    "jshint": "^2.8.0"
+    "jshint": "^2.8.0",
+    "mc-logger": "0.0.0",
+    "mockdate": "^1.0.3"
   },
   "scripts": {
-    "test": "mocha -R spec --recursive test",
+    "test": "mocha -R spec --recursive test/*.test.js",
     "qa": "jscs -v -r unix . && jshint ."
   },
   "repository": {

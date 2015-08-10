@@ -20,7 +20,7 @@ function Scanner(options) {
 	EventEmitter.call(this)
 	this.options = extend(
 		{ rescanTimeout: 2000
-		, sendInterval: 100
+		, sendInterval: 250
 		, rescanWarningTreshold: 10
 		, logger: console }, options)
 
@@ -34,6 +34,7 @@ function Scanner(options) {
 	this.sendInterval = this.options.sendInterval
 	this.rescanTimeout = this.options.rescanTimeout
 	this.rescanCount = 0
+	this.scanDelay = 0
 	this._registerResponseHandlers()
 }
 
@@ -60,70 +61,41 @@ Scanner.prototype._setupDevice = function(port) {
 	this.device.on('open', this._ready.bind(this))
 }
 
-Scanner.prototype._getTransmission = function(data, dataByte) {
-	var opcode = data[0]
+Scanner.prototype._handleTransmission = function(dataByte, cb) {
+	return (function(packet) {
+		var opcode = packet[0]
 
-	if (this.cache[opcode] === undefined) {
-		this.cache[opcode] = new Buffer(data.slice(dataByte))
-	} else {
-		this.cache[opcode] = Buffer.concat([ this.cache[opcode], data.slice(3) ])
-	}
+		if (this.cache[opcode] === undefined) {
+			this.cache[opcode] = new Buffer(packet.slice(dataByte))
+		} else {
+			this.cache[opcode] = Buffer.concat([ this.cache[opcode], packet.slice(dataByte) ])
+		}
 
-	if ((data[2] & 2) === 0) {
-		var returnData = this.cache[opcode]
-		this.cache[opcode] = undefined
-		return returnData
-	}
-
-	return false
+		if ((packet[2] & 2) === 0) {
+			var returnData = this.cache[opcode]
+			this.cache[opcode] = undefined
+			this._send(opcodes.cmdAck)
+			return cb(packet, returnData)
+		}
+	}).bind(this)
 }
 
 Scanner.prototype._registerResponseHandlers = function() {
+	var decodeDataAdaptor = new DecodeDataAdaptor(this, this.options)
 	this.responseHandlers[opcodes.cmdAck] = this.emit.bind(this, 'ack')
 	this.responseHandlers[opcodes.cmdNak] = this.emit.bind(this, 'nak')
 
-	this.responseHandlers[opcodes.imageData] = (function(data) {
-		var decodeData
-		decodeData = this._getTransmission(data, 3)
-		this._send(opcodes.cmdAck)
-		if (decodeData) {
-			var filename = __dirname + '/image-' + Date.now() + '.jpg'
-			fs.writeFile(filename, decodeData.slice(10), (function(err) {
-				if (err) return this.emit('error', err)
-				this.emit('image', filename)
-			}).bind(this))
-		}
+	this.responseHandlers[opcodes.decodeData] = this._handleTransmission(3, function(packet, data) {
+		var filename = __dirname + '/image-' + Date.now() + '.jpg'
+		fs.writeFile(filename, data.slice(10), (function(err) {
+			if (err) return this.emit('error', err)
+			this.emit('image', filename)
+		}).bind(this))
 	}).bind(this)
 
-	this.responseHandlers[opcodes.decodeData] = (function(data) {
-		var decodeData
-		decodeData = this._getTransmission(data, 4)
-		this._send(opcodes.cmdAck)
-		if (decodeData) {
-
-			var scanData = decodeData.toString('ascii')
-			if (((this.lastScanTime + this.rescanTimeout) < Date.now()) || (this.lastScan !== scanData)) {
-				this.rescanTimeout = this.options.rescanTimeout
-				this.rescanCount = 0
-				if ((data[3] !== 1) && (scanData !== 'NR')) {
-					this.lastScanTime = Date.now()
-					this.lastScan = scanData
-					this.emit('scan', scanData, data[3])
-				}
-			} else {
-				// Rescan
-				this.rescanCount += 1
-				if (this.options.rescanWarningTreshold > this.rescanCount) {
-					this.emit('rescanWarning', scanData, data[3])
-				}
-				// Double back off
-				this.rescanTimeout = this.rescanTimeout * 2 || 2 * 60 * 60 * 1000
-				this.logger.warn('Rescan detected. No rescan allowed for', this.rescanTimeout)
-			}
-
-			setTimeout(this.send.bind(this, opcodes.startScanSession, 0x00), this.sendInterval)
-		}
-	}).bind(this)
+	this.responseHandlers[opcodes.decodeData] = this._handleTransmission(4, function(packet, data) {
+		decodeDataAdaptor.process(packet, data.toString('ascii'))
+	})
 }
 
 Scanner.prototype._findPort = function(cb) {

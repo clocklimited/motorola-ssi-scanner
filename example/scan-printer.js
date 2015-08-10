@@ -10,7 +10,10 @@ function log(level) {
 		, formattedArgs = []
 	args.forEach(function(arg) {
 		if (Buffer.isBuffer(arg)) {
-			formattedArgs.push(arg.toString('hex'))
+			var argData = Array.prototype.slice.call(arg)
+			formattedArgs.push(argData.map(function(byte) {
+				return '0x' + byte.toString('16')
+			}))
 		} else {
 			formattedArgs.push(arg)
 		}

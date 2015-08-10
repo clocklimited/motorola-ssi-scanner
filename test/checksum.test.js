@@ -11,7 +11,6 @@ describe('checksum', function() {
 
 		it('should return false for invalid checksum', function() {
 			assert(checksum.check([ 0x05, 0x00, 0x04, 0x00, 0x00, 0xff, 0xe7 ]) === false)
-
 		})
 
 		it('should work with buffers', function() {
