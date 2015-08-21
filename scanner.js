@@ -93,9 +93,11 @@ Scanner.prototype._registerResponseHandlers = function() {
 		}).bind(this))
 	}).bind(this)
 
-	this.responseHandlers[opcodes.decodeData] = this._handleTransmission(4, function(packet, data) {
-		decodeDataAdaptor.process(packet, data.toString('ascii'))
-	})
+	this.responseHandlers[opcodes.decodeData] = this._handleTransmission(4, (function(packet, data) {
+		decodeDataAdaptor.process(packet, data.toString('ascii'), (function() {
+			this.send(opcodes.startScanSession)
+		}).bind(this))
+	}).bind(this))
 }
 
 Scanner.prototype._findPort = function(cb) {
