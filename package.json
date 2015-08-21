@@ -14,10 +14,11 @@
     "jscs": "^2.0.0",
     "jshint": "^2.8.0",
     "mc-logger": "0.0.0",
+    "mocha": "^2.2.5",
     "mockdate": "^1.0.3"
   },
   "publishConfig": {
-    "registry": "http://npm.clockte.ch"
+    "registry": "http://registry.npmjs.org"
   },
   "scripts": {
     "test": "mocha -R spec --recursive test/*.test.js",
