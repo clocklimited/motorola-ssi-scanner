@@ -160,6 +160,7 @@ Scanner.prototype._ready = function() {
     , this.send.bind(this, opcodes.paramSend, [ 0xff, 0x9f, 0x01 ]) // Enable software handshaking ACK/NK
 		, this.send.bind(this, opcodes.paramSend, [ 0xff, 0x5e, 0x01 ]) // Send NR message at end of scan session
     , this.send.bind(this, opcodes.paramSend, [ 0xff, 0xee, 0x01 ]) // Send packeted decode data
+    , this.send.bind(this, opcodes.paramSend, [ 0xff, 0xec, 0x00 ]) // Disable parameter scanning
     , this.send.bind(this, opcodes.requestRevision) // Get the scanner firmware version
 		, this.send.bind(this, opcodes.scanEnable)
 		, this.send.bind(this, opcodes.startScanSession)
