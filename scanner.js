@@ -60,6 +60,9 @@ Scanner.prototype._setupDevice = function(port) {
 	})
 	this.device.on('error', this.emit.bind(this, 'error'))
 	this.device.on('open', this._ready.bind(this))
+
+  // Reset every 2 mins to keep things healthly
+  setInterval(this._ready.bind(this), 60000 * 2)
 }
 
 Scanner.prototype._handleTransmission = function(dataByte, cb) {
@@ -151,7 +154,8 @@ Scanner.prototype._onData = function(packet) {
 Scanner.prototype._ready = function() {
 	this.isReady = true
 	this.device.flush()
-	this.device.on('data', this._onData.bind(this))
+	this.device.removeAllListeners()
+  this.device.on('data', this._onData.bind(this))
 
 	async.series(
 		[ this.send.bind(this, opcodes.scanDisable)
