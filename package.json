@@ -7,7 +7,7 @@
     "async": "^1.4.0",
     "lodash.assign": "^3.2.0",
     "lodash.isequal": "^3.0.4",
-    "serialport": "^1.7.4"
+    "serialport": "^2.0.6"
   },
   "devDependencies": {
     "chalk": "^1.1.0",
