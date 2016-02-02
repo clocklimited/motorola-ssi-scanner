@@ -42,6 +42,7 @@ Scanner.prototype = Object.create(EventEmitter.prototype)
 
 Scanner.prototype.start = function() {
 
+  this.logger.debug('Starting')
 	if (this.options.port) {
 		return this._setupDevice(this.options.port)
 	}
@@ -95,9 +96,16 @@ Scanner.prototype._registerResponseHandlers = function() {
 
 	this.responseHandlers[opcodes.decodeData] = this._handleTransmission(4, (function(packet, data) {
 		decodeDataAdaptor.process(packet, data.toString('ascii'), (function() {
-			this.send(opcodes.startScanSession)
+      process.nextTick(function () {
+        this.send(opcodes.startScanSession)
+      }.bind(this))
 		}).bind(this))
 	}).bind(this))
+
+  this.responseHandlers[opcodes.replyRevision] = this._handleTransmission(4, (function(packet, data) {
+    this.logger.info('Scanner Version', data.toString('ascii'))
+    this.emit('ack')
+  }).bind(this))
 }
 
 Scanner.prototype._findPort = function(cb) {
@@ -149,9 +157,10 @@ Scanner.prototype._ready = function() {
 		[ this.send.bind(this, opcodes.scanDisable)
 		, this.send.bind(this, opcodes.flushQueue)
 		, this.send.bind(this, opcodes.imagerMode, 0x00)
-		, this.send.bind(this, opcodes.paramSend, [ 0xff, 0x9f, 0x01 ]) // Software handshaking
-		, this.send.bind(this, opcodes.paramSend, [ 0xff, 0x5e, 0x01 ]) // NR scan
-		, this.send.bind(this, opcodes.paramSend, [ 0xff, 0xee, 0x01 ]) // Decode data
+    , this.send.bind(this, opcodes.paramSend, [ 0xff, 0x9f, 0x01 ]) // Enable software handshaking ACK/NK
+		, this.send.bind(this, opcodes.paramSend, [ 0xff, 0x5e, 0x01 ]) // Send NR message at end of scan session
+    , this.send.bind(this, opcodes.paramSend, [ 0xff, 0xee, 0x01 ]) // Send packeted decode data
+    , this.send.bind(this, opcodes.requestRevision) // Get the scanner firmware version
 		, this.send.bind(this, opcodes.scanEnable)
 		, this.send.bind(this, opcodes.startScanSession)
 
