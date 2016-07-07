@@ -133,12 +133,14 @@ Scanner.prototype._onData = function(packet) {
 		this.emit('received', packet, this.getOpcodeDescription(packet))
 		this.logger.debug('received', packet)
 
+		this._send(opcodes.cmdAck)
+
 		// Ensure valid packets are coming in
-		if (!check(packet)) {
-			error = new Error('Invalid checksum')
-			error.packet = packet
-			return this.emit('error', error)
-		}
+		//if (!check(packet)) {
+		//  error = new Error('Invalid checksum')
+		//  error.packet = packet
+		//  return this.emit('error', error)
+		//}
 
 		// Remove length and the checksum
 		packet = packet.slice(1, -2)
