@@ -127,6 +127,13 @@ Scanner.prototype._findPort = function(cb) {
 	}).bind(this))
 }
 
+// Packet Format
+// Byte 0 - Packet Length: Length of message not including the check sum bytes. Maximum value is 0xFF.
+// Byte 1 - OpCode - Identifies the type of packet data sent.
+// Byte 2 - Message Source - Identifies where the message is coming from.
+// Byte 3 - Status - Bit 0: 0 = First Time Packet Sent, 1 = Retransmission, Bit 1: 0 - Last Frame, 1 - Int. Frame
+// Byte 4 - Data
+// Byte Length -2 - Checksum
 Scanner.prototype._onData = function(packet) {
 
 		var error
