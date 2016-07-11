@@ -7,6 +7,20 @@ function noop() {
 
 describe('scanner', function() {
 
+  describe('_onData', function() {
+
+    it('should error if packet length wrong', function(done) {
+
+      var scanner = new Scanner({ port: '/foo', logger: logger })
+      scanner.device = { write: noop }
+      scanner.on('error', function (err) {
+        assert.equal(err.message, 'Invalid packet length 9 expected 10')
+        done()
+      })
+      scanner._onData(new Buffer([ 0x08, 0xf3, 0x00, 0x00, 0x01, 0x4e, 0x52, 0xfe, 0x65 ]))
+    })
+  })
+
 	describe('_handleTransmission', function() {
 
 		it('should return data for single packet data', function(done) {
