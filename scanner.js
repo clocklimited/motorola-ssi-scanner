@@ -2,8 +2,7 @@ module.exports = Scanner
 
 var EventEmitter = require('events').EventEmitter
 	, opcodes = require('./lib/opcodes')
-	, serialport = require('serialport')
-	, SerialPort = serialport.SerialPort
+	, SerialPort = require('serialport')
 	, getCommand = require('./lib/command')
 	, extend = require('lodash.assign')
 	, async = require('async')
@@ -56,7 +55,7 @@ Scanner.prototype.start = function() {
 
 Scanner.prototype._setupDevice = function(port) {
 	this.device = new SerialPort(port, {
-	  baudrate: 9600
+	  baudRate: 9600
 	})
 	this.device.on('error', this.emit.bind(this, 'error'))
 	this.device.on('open', this._ready.bind(this))
@@ -112,19 +111,22 @@ Scanner.prototype._registerResponseHandlers = function() {
 }
 
 Scanner.prototype._findPort = function(cb) {
-	serialport.list((function(err, ports) {
-		var port
-		if (err) return cb(err)
-	  port = ports.filter(function(port) {
-	  	return port.vendorId === '0x05e0'
-	  })
-		if (port.length > 0) {
-			this.emit('deviceFound', port[0])
-			cb(null, port[0].comName)
-		} else {
-			cb(new Error('No compatible device found'))
-		}
-	}).bind(this))
+    SerialPort.list().then(
+        ports => {
+            var port
+            if (err) return cb(err)
+            port = ports.filter(function(port) {
+                return port.vendorId === '0x05e0'
+            })
+            if (port.length > 0) {
+                this.emit('deviceFound', port[0])
+                cb(null, port[0].comName)
+            } else {
+                cb(new Error('No compatible device found'))
+            }
+		},
+        err => cb(new Error(err))
+    )
 }
 
 // Packet Format
