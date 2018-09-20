@@ -116,7 +116,6 @@ Scanner.prototype._findPort = function(cb) {
             console.log('PORTS:!!!')
             console.log(ports)
             var port
-            if (err) return cb(err)
             port = ports.filter(function(port) {
                 return port.vendorId === '05e0'
             })
