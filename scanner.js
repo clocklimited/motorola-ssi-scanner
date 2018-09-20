@@ -118,7 +118,7 @@ Scanner.prototype._findPort = function(cb) {
             var port
             if (err) return cb(err)
             port = ports.filter(function(port) {
-                return port.vendorId === '0x05e0'
+                return port.vendorId === '05e0'
             })
             if (port.length > 0) {
                 this.emit('deviceFound', port[0])
