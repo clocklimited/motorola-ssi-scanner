@@ -140,23 +140,9 @@ Scanner.prototype._findPort = function(cb) {
 Scanner.prototype._onData = function(packet) {
 
 		var error
-      , packetLength = packet[0] + 2
 		this.emit('received', packet, this.getOpcodeDescription(packet))
 		this.logger.debug('received', packet)
-
-		// Ensure the packet is complete
-    if (packet.length !== packetLength) {
-      error = new Error('Invalid packet length')
-      error.message = 'Invalid packet length ' + packet.length + ' expected ' + packetLength
-      error.packet = packet
-      return this.emit('error', error)
-    }
-    // Ensure valid packets are coming in
-		if (!check(packet)) {
-			error = new Error('Invalid checksum')
-			error.packet = packet
-			return this.emit('error', error)
-		}
+    this._send(opcodes.cmdAck)
 
 		// Remove length and the checksum
 		packet = packet.slice(1, -2)
