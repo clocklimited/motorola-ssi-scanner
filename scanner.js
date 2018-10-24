@@ -1,22 +1,19 @@
-module.exports = Scanner
-
-var EventEmitter = require('events').EventEmitter
+const EventEmitter = require('events').EventEmitter
   , opcodes = require('./lib/opcodes')
   , SerialPort = require('serialport')
   , getCommand = require('./lib/command')
-  , extend = require('lodash.assign')
   , async = require('async')
   , fs = require('fs')
   , DecodeDataAdaptor = require('./lib/response-adaptor/decode-data')
 
 console.debug = console.info
 
-function noop() {
+const noop = () => {
 }
 
-function Scanner(options) {
+const Scanner = function(options) {
   EventEmitter.call(this)
-  this.options = extend(
+  this.options = Object.assign(
     { rescanTimeout: 2000
       , sendInterval: 250
       , rescanWarningTreshold: 10
@@ -45,7 +42,7 @@ Scanner.prototype.start = function() {
     return this._setupDevice(this.options.port)
   }
 
-  this._findPort((function(err, port) {
+  this._findPort(((err, port) => {
     if (err) return this.emit('error', err)
     this._setupDevice(port)
   }).bind(this))
@@ -64,8 +61,8 @@ Scanner.prototype._setupDevice = function(port) {
 }
 
 Scanner.prototype._handleTransmission = function(dataByte, cb) {
-  return (function(packet) {
-    var opcode = packet[0]
+  return (packet => {
+    const opcode = packet[0]
 
     if (this.cache[opcode] === undefined) {
       this.cache[opcode] = new Buffer(packet.slice(dataByte))
@@ -74,7 +71,7 @@ Scanner.prototype._handleTransmission = function(dataByte, cb) {
     }
 
     if ((packet[2] & 2) === 0) {
-      var returnData = this.cache[opcode]
+      const returnData = this.cache[opcode]
       this.cache[opcode] = undefined
       this._send(opcodes.cmdAck)
       return cb(packet, returnData)
@@ -83,27 +80,27 @@ Scanner.prototype._handleTransmission = function(dataByte, cb) {
 }
 
 Scanner.prototype._registerResponseHandlers = function() {
-  var decodeDataAdaptor = new DecodeDataAdaptor(this, this.options)
+  const decodeDataAdaptor = new DecodeDataAdaptor(this, this.options)
   this.responseHandlers[opcodes.cmdAck] = this.emit.bind(this, 'ack')
   this.responseHandlers[opcodes.cmdNak] = this.emit.bind(this, 'nak')
 
-  this.responseHandlers[opcodes.decodeData] = this._handleTransmission(3, function(packet, data) {
-    var filename = __dirname + '/image-' + Date.now() + '.jpg'
-    fs.writeFile(filename, data.slice(10), (function(err) {
+  this.responseHandlers[opcodes.decodeData] = this._handleTransmission(3, (packet, data) => {
+    const filename = __dirname + '/image-' + Date.now() + '.jpg'
+    fs.writeFile(filename, data.slice(10), (err => {
       if (err) return this.emit('error', err)
       this.emit('image', filename)
     }).bind(this))
   }).bind(this)
 
-  this.responseHandlers[opcodes.decodeData] = this._handleTransmission(4, (function(packet, data) {
-    decodeDataAdaptor.process(packet, data.toString('ascii'), (function() {
-      process.nextTick(function () {
+  this.responseHandlers[opcodes.decodeData] = this._handleTransmission(4, ((packet, data)  => {
+    decodeDataAdaptor.process(packet, data.toString('ascii'), (() => {
+      process.nextTick(() => {
         this.send(opcodes.startScanSession)
-      }.bind(this))
+      })
     }).bind(this))
   }).bind(this))
 
-  this.responseHandlers[opcodes.replyRevision] = this._handleTransmission(4, (function(packet, data) {
+  this.responseHandlers[opcodes.replyRevision] = this._handleTransmission(4, ((packet, data) => {
     this.logger.info('Scanner Version', data.toString('ascii'))
     this.emit('ack')
   }).bind(this))
@@ -112,10 +109,7 @@ Scanner.prototype._registerResponseHandlers = function() {
 Scanner.prototype._findPort = function(cb) {
   SerialPort.list().then(
     ports => {
-      var port
-      port = ports.filter(function(port) {
-        return port.vendorId === '05e0'
-      })
+      const port = ports.filter((port) => port.vendorId === '05e0')
       if (port.length > 0) {
         this.emit('deviceFound', port[0])
         cb(null, port[0].comName)
@@ -136,7 +130,6 @@ Scanner.prototype._findPort = function(cb) {
 // Byte Length -2 - Checksum
 Scanner.prototype._onData = function(packet) {
 
-  var error
   this.emit('received', packet, this.getOpcodeDescription(packet))
   this.logger.debug('received', packet)
   this._send(opcodes.cmdAck)
@@ -170,21 +163,19 @@ Scanner.prototype._ready = function() {
       , this.send.bind(this, opcodes.scanEnable)
       , this.send.bind(this, opcodes.startScanSession)
 
-    ], (function(err) {
+    ], (err => {
       if (err) this.emit('error', err)
       this.emit('ready')
     }).bind(this))
 }
 
-Scanner.prototype.getOpcodeDescription = function(packet) {
-  var opcode = Object.keys(opcodes).filter(function(name) {
-    return packet[1] === opcodes[name] ? name : ''
-  })
+Scanner.prototype.getOpcodeDescription = (packet) => {
+  const opcode = Object.keys(opcodes).filter((name) => packet[1] === opcodes[name] ? name : '')
   return opcode[0]
 }
 
 Scanner.prototype._send = function(opcode, payload) {
-  var command = new Buffer(getCommand(opcode, payload))
+  const command = new Buffer(getCommand(opcode, payload))
   this.logger.debug('send', command, this.getOpcodeDescription(command))
   this.emit('send', command)
   this.device.write(command)
@@ -203,13 +194,13 @@ Scanner.prototype.send = function(opcode, payload, cb) {
 
   this.isWaiting = true
 
-  function nak() {
+  const nak = () => {
     this.isWaiting = false
     this.removeListener('ack', ack)
     setTimeout(cb.bind(null, new Error('nak')), this.sendInterval)
   }
 
-  function ack() {
+  const ack = () => {
     this.isWaiting = false
     this.removeListener('nak', nak)
     setTimeout(cb, this.sendInterval)
@@ -221,3 +212,5 @@ Scanner.prototype.send = function(opcode, payload, cb) {
   this._send(opcode, payload)
 
 }
+
+module.exports = Scanner
