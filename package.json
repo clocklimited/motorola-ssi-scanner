@@ -4,10 +4,8 @@
   "description": "motorola-ssi-scanner",
   "main": "scanner.js",
   "dependencies": {
-    "async": "2.6.1",
-    "lodash.assign": "4.2.0",
-    "lodash.isequal": "4.5.0",
-    "serialport": "7.0.2"
+    "async": "^2.6.1",
+    "serialport": "^7.0.2"
   },
   "devDependencies": {
     "chalk": "2.4.1",
