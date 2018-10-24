@@ -2,12 +2,12 @@ var Scanner = require('../scanner')
 	, assert = require('assert')
 	, opcodes = require('../lib/opcodes')
 
-describe('scanner', function() {
-	it('should find device and emit ready', function(done) {
+describe('scanner', () => {
+	it('should find device and emit ready', (done) => {
 
-		var scanner = new Scanner()
+		const scanner = new Scanner()
 
-		scanner.on('ready', function() {
+		scanner.on('ready', () => {
 			scanner.send(opcodes.stopScanSession, null, done)
 		})
 
@@ -15,14 +15,14 @@ describe('scanner', function() {
 
 	})
 
-	it('should error on bad port', function(done) {
-		var scanner = new Scanner({ port: '/jim' })
+	it('should error on bad port', (done) => {
+		const scanner = new Scanner({ port: '/jim' })
 
-		scanner.on('ready', function() {
+		scanner.on('ready', () => {
 			assert.fail('This should not run')
 		})
 
-		scanner.on('error', function() {
+		scanner.on('error', () => {
 			done()
 		})
 

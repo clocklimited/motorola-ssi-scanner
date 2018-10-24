@@ -1,19 +1,19 @@
 var Scanner = require('../scanner')
-	, assert = require('assert')
 	, logger = require('mc-logger')
-function noop() {
+	, assert = require('assert')
 
+const noop = () => {
 }
 
-describe('scanner', function() {
+describe('scanner', () => {
 
-  describe('_onData', function() {
+  describe('_onData', () => {
 
-    it('should error if packet length wrong', function(done) {
+    it('should error if packet length wrong', (done) => {
 
       var scanner = new Scanner({ port: '/foo', logger: logger })
       scanner.device = { write: noop }
-      scanner.on('error', function (err) {
+      scanner.on('error', (err) => {
         assert.equal(err.message, 'Invalid packet length 9 expected 10')
         done()
       })
@@ -21,23 +21,23 @@ describe('scanner', function() {
     })
   })
 
-	describe('_handleTransmission', function() {
+	describe('_handleTransmission', () => {
 
-		it('should return data for single packet data', function(done) {
+		it('should return data for single packet data', (done) => {
 
-			var scanner = new Scanner({ port: '/foo', logger: logger })
+			const scanner = new Scanner({ port: '/foo', logger: logger })
 			scanner.device = { write: noop }
-			scanner._handleTransmission(4, function(packet, data) {
+			scanner._handleTransmission(4, (packet, data) => {
 					assert.equal(data.toString('ascii'), 'http')
 					done()
 				})(new Buffer([ 0xf3, 0x00, 0x00, 0x1c, 0x68, 0x74, 0x74, 0x70 ]))
 
 		})
 
-		it('should return data when it is the final packet', function(done) {
+		it('should return data when it is the final packet', (done) => {
 
-			var scanner = new Scanner({ port: '/foo', logger: logger })
-				, fn = scanner._handleTransmission(4, function(packet, data) {
+			const scanner = new Scanner({ port: '/foo', logger: logger })
+				, fn = scanner._handleTransmission(4, (packet, data) => {
 					assert.equal(data.toString('ascii'), 'httphttp')
 					done()
 				})
