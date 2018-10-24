@@ -8,12 +8,12 @@
     "serialport": "^7.0.2"
   },
   "devDependencies": {
-    "chalk": "2.4.1",
-    "jscs": "3.0.7",
-    "jshint": "2.9.6",
-    "mc-logger": "0.0.0",
-    "mocha": "5.2.0",
-    "mockdate": "2.0.2"
+    "chalk": "^2.4.1",
+    "jscs": "^3.0.7",
+    "jshint": "^2.9.6",
+    "mc-logger": "^0.0.0",
+    "mocha": "^5.2.0",
+    "mockdate": "^2.0.2"
   },
   "publishConfig": {
     "registry": "http://registry.npmjs.org"
