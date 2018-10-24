@@ -113,8 +113,6 @@ Scanner.prototype._registerResponseHandlers = function() {
 Scanner.prototype._findPort = function(cb) {
     SerialPort.list().then(
         ports => {
-            console.log('PORTS:!!!')
-            console.log(ports)
             var port
             port = ports.filter(function(port) {
                 return port.vendorId === '05e0'
