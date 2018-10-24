@@ -45,7 +45,7 @@ Scanner.prototype.start = function() {
   this._findPort(((err, port) => {
     if (err) return this.emit('error', err)
     this._setupDevice(port)
-  }).bind(this))
+  }))
 
 }
 
@@ -76,7 +76,7 @@ Scanner.prototype._handleTransmission = function(dataByte, cb) {
       this._send(opcodes.cmdAck)
       return cb(packet, returnData)
     }
-  }).bind(this)
+  })
 }
 
 Scanner.prototype._registerResponseHandlers = function() {
@@ -89,21 +89,21 @@ Scanner.prototype._registerResponseHandlers = function() {
     fs.writeFile(filename, data.slice(10), (err => {
       if (err) return this.emit('error', err)
       this.emit('image', filename)
-    }).bind(this))
-  }).bind(this)
+    }))
+  })
 
   this.responseHandlers[opcodes.decodeData] = this._handleTransmission(4, ((packet, data)  => {
     decodeDataAdaptor.process(packet, data.toString('ascii'), (() => {
       process.nextTick(() => {
         this.send(opcodes.startScanSession)
       })
-    }).bind(this))
-  }).bind(this))
+    }))
+  }))
 
   this.responseHandlers[opcodes.replyRevision] = this._handleTransmission(4, ((packet, data) => {
     this.logger.info('Scanner Version', data.toString('ascii'))
     this.emit('ack')
-  }).bind(this))
+  }))
 }
 
 Scanner.prototype._findPort = function(cb) {
@@ -166,7 +166,7 @@ Scanner.prototype._ready = function() {
     ], (err => {
       if (err) this.emit('error', err)
       this.emit('ready')
-    }).bind(this))
+    }))
 }
 
 Scanner.prototype.getOpcodeDescription = (packet) => {
