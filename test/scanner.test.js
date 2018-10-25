@@ -48,4 +48,24 @@ describe('scanner', () => {
 
 	})
 
+  describe('send', () => {
+    it.only('should emit a send event with opcode and payload', (done) => {
+
+      //  [Length, OpCode, Source, reserved, [payload], checksum High, Checksum Low]
+
+      const opcode = 0xe9
+      const payload = [ 1, 1, 1 ]
+
+      const scanner = new Scanner()
+      scanner.device = { write: noop }
+      scanner.isReady = true
+      scanner.on('send', (data) => {
+        const dataSent = [ ...data ]
+        assert.equal(opcode, dataSent[1])
+        assert.deepEqual(payload, dataSent.slice(4, dataSent.length - 2))
+        done()
+      })
+      scanner.send(opcode, payload)
+    })
+  })
 })

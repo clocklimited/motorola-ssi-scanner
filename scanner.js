@@ -197,7 +197,7 @@ Scanner.prototype.send = function(opcode, payload, cb) {
   const nak = () => {
     this.isWaiting = false
     this.removeListener('ack', ack)
-    setTimeout(cb.bind(null, new Error('nak')), this.sendInterval)
+    setTimeout(cb(null, new Error('nak')), this.sendInterval)
   }
 
   const ack = () => {
