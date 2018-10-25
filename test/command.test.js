@@ -1,5 +1,5 @@
 const getCommand = require('../lib/command')
-	, assert = require('assert')
+const assert = require('assert')
 
 describe('command', () => {
 

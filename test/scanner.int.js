@@ -1,6 +1,6 @@
-var Scanner = require('../scanner')
-	, assert = require('assert')
-	, opcodes = require('../lib/opcodes')
+const Scanner = require('../scanner')
+const assert = require('assert')
+const opcodes = require('../lib/opcodes')
 
 describe('scanner', () => {
 	it('should find device and emit ready', (done) => {

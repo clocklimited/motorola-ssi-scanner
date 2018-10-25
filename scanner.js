@@ -1,10 +1,10 @@
 const EventEmitter = require('events').EventEmitter
-  , opcodes = require('./lib/opcodes')
-  , SerialPort = require('serialport')
-  , getCommand = require('./lib/command')
-  , async = require('async')
-  , fs = require('fs')
-  , DecodeDataAdaptor = require('./lib/response-adaptor/decode-data')
+const opcodes = require('./lib/opcodes')
+const SerialPort = require('serialport')
+const getCommand = require('./lib/command')
+const async = require('async')
+const fs = require('fs')
+const DecodeDataAdaptor = require('./lib/response-adaptor/decode-data')
 
 console.debug = console.info
 
