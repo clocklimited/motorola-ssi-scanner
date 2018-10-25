@@ -5,6 +5,7 @@
   "main": "scanner.js",
   "dependencies": {
     "async": "^2.6.1",
+    "lodash.isequal": "^4.5.0",
     "serialport": "^7.0.2"
   },
   "devDependencies": {
@@ -13,7 +14,8 @@
     "jshint": "^2.9.6",
     "mc-logger": "^0.0.0",
     "mocha": "^5.2.0",
-    "mockdate": "^2.0.2"
+    "mockdate": "^2.0.2",
+    "sinon": "^7.1.0"
   },
   "publishConfig": {
     "registry": "http://registry.npmjs.org"

@@ -170,7 +170,7 @@ Scanner.prototype._ready = function() {
 }
 
 Scanner.prototype.getOpcodeDescription = (packet) => {
-  const opcode = Object.keys(opcodes).filter((name) => packet[1] === opcodes[name] ? name : '')
+  const opcode = Object.keys(opcodes).filter(name => packet[1] === opcodes[name] ? name : '')
   return opcode[0]
 }
 
@@ -197,7 +197,7 @@ Scanner.prototype.send = function(opcode, payload, cb) {
   const nak = () => {
     this.isWaiting = false
     this.removeListener('ack', ack)
-    setTimeout(cb(null, new Error('nak')), this.sendInterval)
+    setTimeout(cb.bind(null, new Error('nak')), this.sendInterval)
   }
 
   const ack = () => {
