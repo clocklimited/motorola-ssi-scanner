@@ -49,14 +49,14 @@ describe('scanner', () => {
 	})
 
   describe('send', () => {
-    it.only('should emit a send event with opcode and payload', (done) => {
+    it('should emit a send event with opcode and payload', (done) => {
 
       //  [Length, OpCode, Source, reserved, [payload], checksum High, Checksum Low]
 
       const opcode = 0xe9
       const payload = [ 1, 1, 1 ]
 
-      const scanner = new Scanner()
+      const scanner = new Scanner({ port: '/foo', logger: logger })
       scanner.device = { write: noop }
       scanner.isReady = true
       scanner.on('send', (data) => {
