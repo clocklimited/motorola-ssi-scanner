@@ -12,12 +12,12 @@ function SpyScanner() {
 
 SpyScanner.prototype = Object.create(EventEmitter.prototype)
 
-SpyScanner.prototype.send = () => {
+SpyScanner.prototype.send = function () {
 }
 
-describe('decode-data-adaptor', () => {
+describe('decode-data-adaptor', function () {
 
-	it('should cause an scan to be emitted and return code and data', (done) => {
+	it('should cause an scan to be emitted and return code and data', function (done) {
 		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner)
 
@@ -31,7 +31,7 @@ describe('decode-data-adaptor', () => {
 
 	})
 
-	it('should not emit scan on NR', (done) => {
+	it('should not emit scan on NR', function (done) {
 		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner)
 
@@ -43,7 +43,7 @@ describe('decode-data-adaptor', () => {
 		process.nextTick(done)
 	})
 
-	it('should not rescan same code for 5 seconds', (done) => {
+	it('should not rescan same code for 5 seconds', function (done) {
 		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner)
 			, now = Date.now()
@@ -51,7 +51,7 @@ describe('decode-data-adaptor', () => {
 
 		let count = 0
 
-		spyScanner.on('scan',(code) => {
+		spyScanner.on('scan', function (code) {
 			assert.equal(expected[count], code)
 			count += 1
 			if (count === expected.length) done()
@@ -71,7 +71,7 @@ describe('decode-data-adaptor', () => {
 		mockDate.reset()
 	})
 
-	it('should allow scanning of different codes every 5 seconds', (done) => {
+	it('should allow scanning of different codes every 5 seconds', function (done) {
 		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner)
 			, now = Date.now()
@@ -79,7 +79,7 @@ describe('decode-data-adaptor', () => {
 
 		let count = 0
 
-		spyScanner.on('scan', (code) => {
+		spyScanner.on('scan', function (code) {
 			assert.equal(expected[count], code)
 			count += 1
 			if (count === expected.length) done()
@@ -94,7 +94,7 @@ describe('decode-data-adaptor', () => {
 		mockDate.reset()
 	})
 
-	it('should scanning a different code resets rescan limit', (done) => {
+	it('should scanning a different code resets rescan limit', function (done) {
 		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner)
 			, now = Date.now()
@@ -102,7 +102,7 @@ describe('decode-data-adaptor', () => {
 
       let count = 0
 
-		spyScanner.on('scan', (code) => {
+		spyScanner.on('scan', function (code) {
 			assert.equal(expected[count], code)
 			count += 1
 			if (count === expected.length) done()
@@ -118,7 +118,7 @@ describe('decode-data-adaptor', () => {
 		mockDate.reset()
 	})
 
-	it('should not reset rescan delay after a failed scan', (done) => {
+	it('should not reset rescan delay after a failed scan', function (done) {
 		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner)
 			, now = Date.now()
@@ -126,7 +126,7 @@ describe('decode-data-adaptor', () => {
 
       let count = 0
 
-		spyScanner.on('scan', (code) => {
+		spyScanner.on('scan', function (code) {
 			assert.equal(expected[count], code)
 			count += 1
 			if (count === expected.length) done()
@@ -142,7 +142,7 @@ describe('decode-data-adaptor', () => {
 		mockDate.reset()
 	})
 
-	it('should emit rescanWarning', (done) => {
+	it('should emit rescanWarning', function (done) {
 		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner, { rescanWarningTreshold: 5 })
 

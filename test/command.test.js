@@ -1,22 +1,22 @@
 const getCommand = require('../lib/command')
 const assert = require('assert')
 
-describe('command', () => {
+describe('command', function () {
 
-	it('should construct valid command without payload', () => {
+	it('should construct valid command without payload', function () {
 
 		assert.deepEqual(getCommand(0x10), [ 0x04, 0x10, 0x04, 0x00, 0xff, 0xe8 ])
 		assert.deepEqual(getCommand(0x10, null), [ 0x04, 0x10, 0x04, 0x00, 0xff, 0xe8 ])
 		assert.deepEqual(getCommand(0x10, undefined), [ 0x04, 0x10, 0x04, 0x00, 0xff, 0xe8 ])
 	})
 
-	it('should construct valid command with single byte payload', () => {
+	it('should construct valid command with single byte payload', function () {
 
 		assert.deepEqual(getCommand(0x00, 0x12), [ 0x05, 0x00, 0x04, 0x00, 0x12, 0xff, 0xe5 ])
 
 	})
 
-	it('should construct valid command with single byte payload', () => {
+	it('should construct valid command with single byte payload', function () {
 
 		assert.deepEqual(getCommand(0x00, [ 0x12, 0xe3 ]), [ 0x06, 0x00, 0x04, 0x00, 0x12, 0xe3, 0xff, 0x01 ])
 

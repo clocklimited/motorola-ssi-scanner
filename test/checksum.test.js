@@ -11,30 +11,30 @@ const longPacket = [ 255, 243, 0, 3, 28, 123, 34, 99, 105, 100, 34, 58, 32, 34, 
     , 114, 99, 70, 56, 119, 67, 114, 100, 110, 114, 114, 111, 34, 44, 34, 100, 97, 116, 97, 34, 58, 123, 34, 112, 114
     , 111, 100, 117, 99, 116, 115, 34, 58, 91, 123, 34, 111, 112, 116, 105, 111, 110, 34, 174, 210 ]
 
-describe('checksum', () => {
+describe('checksum', function () {
 
-	describe('check', () => {
+	describe('check', function () {
 
-		it('should return true for valid checksum', () => {
+		it('should return true for valid checksum', function () {
 			assert(checksum.check([ 0x05, 0x00, 0x04, 0x00, 0x00, 0xff, 0xf7 ]))
 			assert(checksum.check([ 0x07, 0xf3, 0x00, 0x00, 0x01, 0x4e, 0x52, 0xfe, 0x65 ]))
 		})
 
-		it('should return false for invalid checksum', () => {
+		it('should return false for invalid checksum', function () {
 			assert(checksum.check([ 0x05, 0x00, 0x04, 0x00, 0x00, 0xff, 0xe7 ]) === false)
 		})
 
-		it('should work with buffers', () => {
+		it('should work with buffers', function () {
 			assert(checksum.check(new Buffer([ 0x05, 0x00, 0x04, 0x00, 0x00, 0xff, 0xf7 ])))
 		})
 
-    it('should return true for long valid', () => {
+    it('should return true for long valid', function () {
       assert(checksum.check(longPacket))
     })
 	})
 
-	describe('create', () => {
-		it('should create expected checksum', () => {
+	describe('create', function () {
+		it('should create expected checksum', function () {
 			assert.deepEqual(checksum.create([ 0x07, 0xf3, 0x00, 0x00, 0x01, 0x4e, 0x52 ]), [ 0xfe, 0x65 ])
 			assert.deepEqual(checksum.create([ 0x00 ]), [ 0x0, 0x0 ])
 			assert.deepEqual(checksum.create([ 0xff, 0xff, 0xff, 0xff, 0xff ]), [ 0xfb, 0x05 ])
