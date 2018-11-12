@@ -1,4 +1,4 @@
-var DecodeDataAdaptor = require('../lib/response-adaptor/decode-data')
+const DecodeDataAdaptor = require('../lib/response-adaptor/decode-data')
 	, assert = require('assert')
 	, EventEmitter = require('events').EventEmitter
 	, mockDate = require('mockdate')
@@ -15,10 +15,10 @@ SpyScanner.prototype = Object.create(EventEmitter.prototype)
 SpyScanner.prototype.send = function () {
 }
 
-describe('decode-data-adaptor', function() {
+describe('decode-data-adaptor', function () {
 
-	it('should cause an scan to be emitted and return code and data', function(done) {
-		var spyScanner = new SpyScanner()
+	it('should cause an scan to be emitted and return code and data', function (done) {
+		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner)
 
 		spyScanner.on('scan', function(code, type) {
@@ -31,8 +31,8 @@ describe('decode-data-adaptor', function() {
 
 	})
 
-	it('should not emit scan on NR', function(done) {
-		var spyScanner = new SpyScanner()
+	it('should not emit scan on NR', function (done) {
+		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner)
 
 		spyScanner.on('scan', function() {
@@ -43,14 +43,15 @@ describe('decode-data-adaptor', function() {
 		process.nextTick(done)
 	})
 
-	it('should not rescan same code for 5 seconds', function(done) {
-		var spyScanner = new SpyScanner()
+	it('should not rescan same code for 5 seconds', function (done) {
+		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner)
 			, now = Date.now()
-			, count = 0
 			, expected = [ 'foo', 'foo', 'foo' ]
 
-		spyScanner.on('scan', function(code) {
+		let count = 0
+
+		spyScanner.on('scan', function (code) {
 			assert.equal(expected[count], code)
 			count += 1
 			if (count === expected.length) done()
@@ -70,14 +71,15 @@ describe('decode-data-adaptor', function() {
 		mockDate.reset()
 	})
 
-	it('should allow scanning of different codes every 5 seconds', function(done) {
-		var spyScanner = new SpyScanner()
+	it('should allow scanning of different codes every 5 seconds', function (done) {
+		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner)
 			, now = Date.now()
-			, count = 0
 			, expected = [ 'one', 'two', 'three' ]
 
-		spyScanner.on('scan', function(code) {
+		let count = 0
+
+		spyScanner.on('scan', function (code) {
 			assert.equal(expected[count], code)
 			count += 1
 			if (count === expected.length) done()
@@ -92,14 +94,15 @@ describe('decode-data-adaptor', function() {
 		mockDate.reset()
 	})
 
-	it('should scanning a different code resets rescan limit', function(done) {
-		var spyScanner = new SpyScanner()
+	it('should scanning a different code resets rescan limit', function (done) {
+		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner)
 			, now = Date.now()
-			, count = 0
 			, expected = [ 'one', 'two', 'one', 'three' ]
 
-		spyScanner.on('scan', function(code) {
+      let count = 0
+
+		spyScanner.on('scan', function (code) {
 			assert.equal(expected[count], code)
 			count += 1
 			if (count === expected.length) done()
@@ -115,14 +118,15 @@ describe('decode-data-adaptor', function() {
 		mockDate.reset()
 	})
 
-	it('should not reset rescan delay after a failed scan', function(done) {
-		var spyScanner = new SpyScanner()
+	it('should not reset rescan delay after a failed scan', function (done) {
+		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner)
 			, now = Date.now()
-			, count = 0
 			, expected = [ 'one', 'one' ]
 
-		spyScanner.on('scan', function(code) {
+      let count = 0
+
+		spyScanner.on('scan', function (code) {
 			assert.equal(expected[count], code)
 			count += 1
 			if (count === expected.length) done()
@@ -138,10 +142,11 @@ describe('decode-data-adaptor', function() {
 		mockDate.reset()
 	})
 
-	it('should emit rescanWarning', function(done) {
-		var spyScanner = new SpyScanner()
+	it('should emit rescanWarning', function (done) {
+		const spyScanner = new SpyScanner()
 			, decodeDataAdaptor = new DecodeDataAdaptor(spyScanner, { rescanWarningTreshold: 5 })
-			, count = 0
+
+		let count = 0
 
 		spyScanner.on('recanWarning', function() {
 			count += 1

@@ -1,21 +1,21 @@
 {
   "name": "motorola-ssi-scanner",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "motorola-ssi-scanner",
   "main": "scanner.js",
   "dependencies": {
-    "async": "^1.4.0",
-    "lodash.assign": "^3.2.0",
-    "lodash.isequal": "^3.0.4",
-    "serialport": "^2.0.6"
+    "async": "^2.6.1",
+    "lodash.isequal": "^4.5.0",
+    "serialport": "^7.0.2"
   },
   "devDependencies": {
-    "chalk": "^1.1.0",
-    "jscs": "^2.0.0",
-    "jshint": "^2.8.0",
-    "mc-logger": "0.0.0",
-    "mocha": "^2.2.5",
-    "mockdate": "^1.0.3"
+    "chalk": "^2.4.1",
+    "jscs": "^3.0.7",
+    "jshint": "^2.9.6",
+    "mc-logger": "^0.0.0",
+    "mocha": "^5.2.0",
+    "mockdate": "^2.0.2",
+    "sinon": "^7.1.0"
   },
   "publishConfig": {
     "registry": "http://registry.npmjs.org"
