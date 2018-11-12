@@ -1,6 +1,6 @@
 {
   "name": "motorola-ssi-scanner",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "motorola-ssi-scanner",
   "main": "scanner.js",
   "engine": {
