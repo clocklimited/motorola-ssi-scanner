@@ -65,7 +65,7 @@ Scanner.prototype._handleTransmission = function(dataByte, cb) {
     const opcode = packet[0]
 
     if (this.cache[opcode] === undefined) {
-      this.cache[opcode] = new Buffer(packet.slice(dataByte))
+      this.cache[opcode] = Buffer.from(packet.slice(dataByte))
     } else {
       this.cache[opcode] = Buffer.concat([ this.cache[opcode], packet.slice(dataByte) ])
     }
@@ -175,7 +175,7 @@ Scanner.prototype.getOpcodeDescription = (packet) => {
 }
 
 Scanner.prototype._send = function(opcode, payload) {
-  const command = new Buffer(getCommand(opcode, payload))
+  const command = Buffer.from(getCommand(opcode, payload))
   this.logger.debug('send', command, this.getOpcodeDescription(command))
   this.emit('send', command)
   this.device.write(command)

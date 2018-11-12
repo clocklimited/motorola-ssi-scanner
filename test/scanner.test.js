@@ -28,39 +28,39 @@ describe('scanner', function () {
       scanner.device = { write: noop }
       scanner.isReady = true
       scanner.on('send', spy)
-      scanner._onData(new Buffer([ 0x08, 0xf3, 0x00, 0x00, 0x01, 0x4e, 0x52, 0xfe, 0x65, 0x65 ]))
+      scanner._onData(Buffer.from([ 0x08, 0xf3, 0x00, 0x00, 0x01, 0x4e, 0x52, 0xfe, 0x65, 0x65 ]))
       const spyData = [ ...spy.firstCall.args[0] ]
       assert.equal(spyData[1], opcodes.cmdAck)
       done()
     })
   })
 
-	describe('_handleTransmission', function () {
+  describe('_handleTransmission', function () {
 
-		it('should return data for single packet data', function (done) {
+    it('should return data for single packet data', function (done) {
 
-			const scanner = new Scanner({ port: '/foo', logger: logger })
-			scanner.device = { write: noop }
-			scanner._handleTransmission(4, function (packet, data) {
-					assert.equal(data.toString('ascii'), 'http')
-					done()
-				})(new Buffer([ 0xf3, 0x00, 0x00, 0x1c, 0x68, 0x74, 0x74, 0x70 ]))
+      const scanner = new Scanner({ port: '/foo', logger: logger })
+      scanner.device = { write: noop }
+      scanner._handleTransmission(4, function (packet, data) {
+          assert.equal(data.toString('ascii'), 'http')
+          done()
+        })(Buffer.from([ 0xf3, 0x00, 0x00, 0x1c, 0x68, 0x74, 0x74, 0x70 ]))
 
-		})
+    })
 
-		it('should return data when it is the final packet', function (done) {
+    it('should return data when it is the final packet', function (done) {
 
-			const scanner = new Scanner({ port: '/foo', logger: logger })
-				, fn = scanner._handleTransmission(4, function (packet, data) {
-					assert.equal(data.toString('ascii'), 'httphttp')
-					done()
-				})
-			scanner.device = { write: noop }
-			fn(new Buffer([ 0xf3, 0x00, 0x02, 0x1c, 0x68, 0x74, 0x74, 0x70 ]))
-			fn(new Buffer([ 0xf3, 0x00, 0x00, 0x1c, 0x68, 0x74, 0x74, 0x70 ]))
-		})
+      const scanner = new Scanner({ port: '/foo', logger: logger })
+        , fn = scanner._handleTransmission(4, function (packet, data) {
+          assert.equal(data.toString('ascii'), 'httphttp')
+          done()
+        })
+      scanner.device = { write: noop }
+      fn(Buffer.from([ 0xf3, 0x00, 0x02, 0x1c, 0x68, 0x74, 0x74, 0x70 ]))
+      fn(Buffer.from([ 0xf3, 0x00, 0x00, 0x1c, 0x68, 0x74, 0x74, 0x70 ]))
+    })
 
-	})
+  })
 
   describe('send', function () {
     it('should emit a send event with opcode and payload', function (done) {
