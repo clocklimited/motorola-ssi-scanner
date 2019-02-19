@@ -147,6 +147,7 @@ Scanner.prototype._onData = function(packet) {
 
 Scanner.prototype._ready = function() {
   this.isReady = true
+  this.isWaiting = false
   this.device.flush()
   this.device.removeAllListeners()
   this.device.on('data', this._onData.bind(this))
