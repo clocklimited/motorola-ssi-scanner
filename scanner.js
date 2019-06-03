@@ -31,6 +31,7 @@ const Scanner = function(options) {
   this.rescanCount = 0
   this.scanDelay = 0
   this._registerResponseHandlers()
+  this.resetIntervalObj = false
 }
 
 Scanner.prototype = Object.create(EventEmitter.prototype)
@@ -58,6 +59,7 @@ Scanner.prototype._setupDevice = function(port) {
 
   // Reset every 2 mins to keep things healthly
   setInterval(this._ready.bind(this), 60000 * 2)
+  this.resetIntervalObj = setInterval(this._ready.bind(this), 60000 * 2)
 }
 
 Scanner.prototype._handleTransmission = function(dataByte, cb) {
@@ -191,7 +193,18 @@ Scanner.prototype.send = function(opcode, payload, cb) {
   if (cb === undefined) cb = noop
 
   if (!this.isReady) return cb(new Error('Scanner not ready'))
-  if (this.isWaiting) return cb(new Error('Scanner not waiting for a response'))
+  if (this.isWaiting) {
+    if (!this.resetIntervalObj) {
+      return cb(new Error('Scanner not waiting for a response'))
+    }
+    else {
+      // Reset the scanner when a recoverable error is seen
+      clearInterval(this.resetIntervalObj)
+      this.resetIntervalObj = setInterval(this._ready.bind(this), 60000 * 2)
+      this._ready.bind(this)
+      return
+    }
+  }
 
   this.isWaiting = true
 
