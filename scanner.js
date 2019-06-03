@@ -32,6 +32,7 @@ const Scanner = function(options) {
   this.scanDelay = 0
   this._registerResponseHandlers()
   this.resetIntervalObj = false
+  this.nakTimeoutObj = false
 }
 
 Scanner.prototype = Object.create(EventEmitter.prototype)
@@ -200,6 +201,7 @@ Scanner.prototype.send = function(opcode, payload, cb) {
     else {
       // Reset the scanner when a recoverable error is seen
       clearInterval(this.resetIntervalObj)
+      clearInterval(this.nakTimeoutObj)
       this.resetIntervalObj = setInterval(this._ready.bind(this), 60000 * 2)
       this._ready.bind(this)
       return
@@ -211,7 +213,7 @@ Scanner.prototype.send = function(opcode, payload, cb) {
   const nak = () => {
     this.isWaiting = false
     this.removeListener('ack', ack)
-    setTimeout(cb.bind(null, new Error('nak')), this.sendInterval)
+    this.nakTimeoutObj = setTimeout(cb.bind(null, new Error('nak')), this.sendInterval)
   }
 
   const ack = () => {
