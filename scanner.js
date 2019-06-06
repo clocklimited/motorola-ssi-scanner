@@ -59,7 +59,6 @@ Scanner.prototype._setupDevice = function(port) {
   this.device.on('open', this._ready.bind(this))
 
   // Reset every 2 mins to keep things healthly
-  setInterval(this._ready.bind(this), 60000 * 2)
   this.resetIntervalObj = setInterval(this._ready.bind(this), 60000 * 2)
 }
 
