@@ -103,7 +103,7 @@ Scanner.prototype._registerResponseHandlers = function() {
   }))
 
   this.responseHandlers[opcodes.replyRevision] = this._handleTransmission(4, ((packet, data) => {
-    this.logger.info('Scanner Version', data.toString('ascii'))
+    this.logger.debug('Scanner Version', data.toString('ascii'))
     this.emit('ack')
   }))
 }
