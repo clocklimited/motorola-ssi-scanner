@@ -1,5 +1,7 @@
 # motorola-ssi-scanner
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/clocklimited/motorola-ssi-scanner.svg)](https://greenkeeper.io/)
+
 Communicate with a Motorola SE3307 IG scanner using SSI over USB in node.js
 
 ## Scanner Version
