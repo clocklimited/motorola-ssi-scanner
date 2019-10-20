@@ -31,15 +31,22 @@ const Scanner = function(options) {
   this.rescanCount = 0
   this.scanDelay = 0
   this._registerResponseHandlers()
-  this.resetIntervalObj = false
-  this.nakTimeoutObj = false
+  this.resetIntervalObj
+  this.nakTimeoutObj
 }
 
 Scanner.prototype = Object.create(EventEmitter.prototype)
 
+Scanner.prototype._error = function(err) {
+  this.logger.error('Error: ', err.message)
+}
+
 Scanner.prototype.start = function() {
 
   this.logger.debug('Starting')
+
+  this.on('error', this._error.bind(this))
+
   if (this.options.port) {
     return this._setupDevice(this.options.port)
   }
@@ -147,6 +154,27 @@ Scanner.prototype._onData = function(packet) {
   }
 }
 
+Scanner.prototype.disable = function() {
+  clearInterval(this.resetIntervalObj)
+  clearInterval(this.nakTimeoutObj)
+  this.isReady = false
+  //this.device.flush()
+  //this.device.removeAllListeners()
+  async.series(
+    [ this.send.bind(this, opcodes.scanDisable)
+      //, this.send.bind(this, opcodes.flushQueue)
+    ], (err => {
+      if (err) this.emit('error', err)
+    }))
+  this.logger.warn('Disabling scanner')
+}
+
+Scanner.prototype.reenable = function() {
+  this._ready()
+  this.resetIntervalObj = setInterval(this._ready.bind(this), 60000 * 2)
+  this.logger.warn('Re-enabling scanner')
+}
+
 Scanner.prototype._ready = function() {
   this.isReady = true
   this.isWaiting = false
@@ -194,7 +222,7 @@ Scanner.prototype.send = function(opcode, payload, cb) {
 
   if (!this.isReady) return cb(new Error('Scanner not ready'))
   if (this.isWaiting) {
-    if (!this.resetIntervalObj) {
+    if (this.resetIntervalObj === undefined) {
       return cb(new Error('Scanner not waiting for a response'))
     }
     else {
@@ -202,7 +230,6 @@ Scanner.prototype.send = function(opcode, payload, cb) {
       clearInterval(this.resetIntervalObj)
       clearInterval(this.nakTimeoutObj)
       this.resetIntervalObj = setInterval(this._ready.bind(this), 60000 * 2)
-      this._ready.bind(this)
       return
     }
   }
