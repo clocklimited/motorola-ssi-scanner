@@ -158,11 +158,8 @@ Scanner.prototype.disable = function() {
   clearInterval(this.resetIntervalObj)
   clearInterval(this.nakTimeoutObj)
   this.isReady = false
-  //this.device.flush()
-  //this.device.removeAllListeners()
   async.series(
     [ this.send.bind(this, opcodes.scanDisable)
-      //, this.send.bind(this, opcodes.flushQueue)
     ], (err => {
       if (err) this.emit('error', err)
     }))
