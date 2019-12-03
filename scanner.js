@@ -203,10 +203,16 @@ Scanner.prototype.getOpcodeDescription = (packet) => {
 }
 
 Scanner.prototype._send = function(opcode, payload) {
-  const command = Buffer.from(getCommand(opcode, payload))
-  this.logger.debug('send', command, this.getOpcodeDescription(command))
-  this.emit('send', command)
-  this.device.write(command)
+  if(this.device.isOpen) {
+    const command = Buffer.from(getCommand(opcode, payload))
+    this.logger.debug('send', command, this.getOpcodeDescription(command))
+    this.emit('send', command)
+    this.device.write(command)
+  }
+  else {
+    this.logger.error('Port is not open - rechecking')
+    setTimeout(_send, 10, opcode, payload)
+  }
 }
 
 Scanner.prototype.send = function(opcode, payload, cb) {
