@@ -211,7 +211,7 @@ Scanner.prototype._send = function(opcode, payload) {
   }
   else {
     this.logger.error('Port is not open - rechecking')
-    setTimeout(_send, 10, opcode, payload)
+    setTimeout(this._send, 10, opcode, payload)
   }
 }
 
