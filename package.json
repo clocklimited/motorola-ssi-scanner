@@ -9,7 +9,7 @@
   "dependencies": {
     "async": "^2.6.1",
     "lodash.isequal": "^4.5.0",
-    "serialport": "^7.0.2"
+    "serialport": "^9.2.8"
   },
   "devDependencies": {
     "chalk": "^2.4.1",

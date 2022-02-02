@@ -121,7 +121,7 @@ Scanner.prototype._findPort = function(cb) {
       const port = ports.filter((port) => port.vendorId === '05e0')
       if (port.length > 0) {
         this.emit('deviceFound', port[0])
-        cb(null, port[0].comName)
+        cb(null, port[0].path)
       } else {
         cb(new Error('No compatible device found'))
       }
